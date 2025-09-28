@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hospital Appointment Booking</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    /* Form styling */
+    .appointment-form {
+      background: #fff;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    label, select, input, button {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #34495e;
+    }
+    #schedule {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #ecf0f1;
+      display: none;
+    }
+    #confirmation {
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px 18px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #2c3e50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .specialty {
+      font-style: italic;
+      color: #555;
+    }
+    .available {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hospital Appointment Booking</h1>
+
+    <!-- Appointment Form -->
+    <div class="appointment-form">
+      <h2>Book a Doctor's Appointment</h2>
+      <label for="problem">Describe your problem:</label>
+      <input type="text" id="problem" placeholder="e.g. skin allergy, chest pain, headache">
+      <button onclick="suggestDoctor()">Find Doctor</button>
+
+      <div id="schedule">
+        <p><strong>Suggested Doctor:</strong> <span id="doctorName"></span></p>
+        <p><strong>Specialty:</strong> <span id="specialty"></span></p>
+        <label for="time">Available Time Slots:</label>
+        <select id="time"></select>
+        <button onclick="bookAppointment()">Book Appointment</button>
+      </div>
+      <p id="confirmation"></p>
+    </div>
+
+    <!-- Doctors List -->
+    <h2>Available Doctors in Hospital</h2>
+    <table>
+      <tr>
+        <th>Doctor Name</th>
+        <th>Specialty</th>
+        <th>Availability</th>
+        <th>Time Slots</th>
+      </tr>
+      <tr>
+        <td>Dr. Smith</td>
+        <td class="specialty">Cardiology</td>
+        <td class="available">Available</td>
+        <td>10:00 AM, 2:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Lee</td>
+        <td class="specialty">Neurology</td>
+        <td class="available">Available</td>
+        <td>11:00 AM, 3:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Patel</td>
+        <td class="specialty">Cardiology</td>
+        <td class="available">Available</td>
+        <td>9:00 AM, 1:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Chen</td>
+        <td class="specialty">Dermatology</td>
+        <td class="available">Available</td>
+        <td>10:30 AM, 4:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Gupta</td>
+        <td class="specialty">Neurology</td>
+        <td class="available">Available</td>
+        <td>9:30 AM, 12:30 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Adams</td>
+        <td class="specialty">Orthopedics</td>
+        <td class="available">Available</td>
+        <td>11:30 AM, 3:30 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Brown</td>
+        <td class="specialty">Pediatrics</td>
+        <td class="available">Available</td>
+        <td>10:00 AM, 1:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Wilson</td>
+        <td class="specialty">Oncology</td>
+        <td class="available">Available</td>
+        <td>2:00 PM, 4:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Taylor</td>
+        <td class="specialty">Psychiatry</td>
+        <td class="available">Available</td>
+        <td>11:00 AM, 2:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Johnson</td>
+        <td class="specialty">Radiology</td>
+        <td class="available">Available</td>
+        <td>9:00 AM, 12:00 PM</td>
+      </tr>
+      <tr>
+        <td>Dr. Davis</td>
+        <td class="specialty">Gastroenterology</td>
+        <td class="available">Available</td>
+        <td>10:00 AM, 1:30 PM</td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    const doctors = [
+      { name: "Dr. Smith", specialty: "Cardiologist", keywords: ["heart", "chest pain"], slots: ["10:00 AM", "2:00 PM", "4:00 PM"] },
+      { name: "Dr. Adams", specialty: "Dermatologist", keywords: ["skin", "rash", "allergy"], slots: ["11:00 AM", "1:00 PM", "3:00 PM"] },
+      { name: "Dr. Lee", specialty: "Neurologist", keywords: ["headache", "migraine", "dizziness"], slots: ["9:00 AM", "12:00 PM", "5:00 PM"] },
+      { name: "Dr. Patel", specialty: "General Physician", keywords: ["fever", "cold", "cough"], slots: ["10:30 AM", "1:30 PM", "3:30 PM"] }
+    ];
+
+    function suggestDoctor() {
+      const problem = document.getElementById("problem").value.toLowerCase();
+      const match = doctors.find(doc => doc.keywords.some(keyword => problem.includes(keyword)));
+
+      if (match) {
+        document.getElementById("doctorName").textContent = match.name;
+        document.getElementById("specialty").textContent = match.specialty;
+
+        const timeSelect = document.getElementById("time");
+        timeSelect.innerHTML = "";
+        match.slots.forEach(slot => {
+          const option = document.createElement("option");
+          option.textContent = slot;
+          timeSelect.appendChild(option);
+        });
+
+        document.getElementById("schedule").style.display = "block";
+        document.getElementById("confirmation").textContent = "";
+      } else {
+        alert("Sorry, we couldn't find a doctor for that problem. Please try a different description.");
+        document.getElementById("schedule").style.display = "none";
+      }
+    }
+
+    function bookAppointment() {
+      const doctor = document.getElementById("doctorName").textContent;
+      const time = document.getElementById("time").value;
+      document.getElementById("confirmation").textContent =
+        `✅ Appointment booked with ${doctor} at ${time}`;
+    }
+  </script>
+</body>
+</html>
